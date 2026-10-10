@@ -1,6 +1,7 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=12 format=3]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_player"]
+[ext_resource type="PackedScene" path="res://Enemy.tscn" id="2_enemy"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
 size = Vector2(80, 80)
@@ -79,6 +80,9 @@ mesh = SubResource("CapsuleMesh_player")
 
 [node name="PlayerCollision" type="CollisionShape3D" parent="Player"]
 shape = SubResource("CapsuleShape3D_player")
+
+[node name="Enemy" parent="." instance=ExtResource("2_enemy")]
+position = Vector3(0, 0.9, -6)
 
 [node name="Camera3D" type="Camera3D" parent="Player"]
 position = Vector3(0, 3, 6)
