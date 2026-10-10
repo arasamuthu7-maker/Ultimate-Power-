@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_player"]
 [ext_resource type="PackedScene" path="res://Enemy.tscn" id="2_enemy"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" path="res://GameHUD.gd" id="5_hud"]
 [ext_resource type="Script" path="res://EnemySpawner.gd" id="6_spawner"]
 [ext_resource type="PackedScene" path="res://NPC.tscn" id="7_npc"]
+[ext_resource type="PackedScene" path="res://MobileControls.tscn" id="8_mobile"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
 size = Vector2(80, 80)
@@ -115,6 +116,8 @@ dialogue = "Use 1 for Energy Blast, 2 for Ground Smash, and 3 for Power Dash."
 
 [node name="GameHUD" type="CanvasLayer" parent="."]
 script = ExtResource("5_hud")
+
+[node name="MobileControls" parent="." instance=ExtResource("8_mobile")]
 
 [node name="Camera3D" type="Camera3D" parent="Player"]
 position = Vector3(0, 3, 6)
