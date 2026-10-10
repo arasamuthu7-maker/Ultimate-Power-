@@ -1,12 +1,12 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_player"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
-size = Vector2(40, 40)
+size = Vector2(80, 80)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_ground"]
-size = Vector3(40, 0.2, 40)
+size = Vector3(80, 0.2, 80)
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_player"]
 height = 2.0
@@ -16,19 +16,59 @@ radius = 0.45
 height = 2.0
 radius = 0.45
 
+[sub_resource type="StandardMaterial3D" id="Material_ground"]
+albedo_color = Color(0.16, 0.42, 0.22, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_platform"]
+size = Vector3(8, 0.5, 8)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_platform"]
+size = Vector3(8, 0.5, 8)
+
+[sub_resource type="StandardMaterial3D" id="Material_platform"]
+albedo_color = Color(0.18, 0.3, 0.72, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_training"]
+size = Vector3(3, 1, 3)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_training"]
+size = Vector3(3, 1, 3)
+
 [node name="Main" type="Node3D"]
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 rotation = Vector3(-0.8, -0.5, 0.0)
+shadow_enabled = true
 
 [node name="Ground" type="StaticBody3D" parent="."]
 
 [node name="GroundMesh" type="MeshInstance3D" parent="Ground"]
 mesh = SubResource("PlaneMesh_ground")
+material_override = SubResource("Material_ground")
 
 [node name="GroundCollision" type="CollisionShape3D" parent="Ground"]
 position = Vector3(0, -0.1, 0)
 shape = SubResource("BoxShape3D_ground")
+
+[node name="CentralPlatform" type="StaticBody3D" parent="."]
+position = Vector3(0, 0.25, -8)
+
+[node name="PlatformMesh" type="MeshInstance3D" parent="CentralPlatform"]
+mesh = SubResource("BoxMesh_platform")
+material_override = SubResource("Material_platform")
+
+[node name="PlatformCollision" type="CollisionShape3D" parent="CentralPlatform"]
+shape = SubResource("BoxShape3D_platform")
+
+[node name="TrainingBlock" type="StaticBody3D" parent="."]
+position = Vector3(8, 0.5, -8)
+
+[node name="TrainingMesh" type="MeshInstance3D" parent="TrainingBlock"]
+mesh = SubResource("BoxMesh_training")
+material_override = SubResource("Material_platform")
+
+[node name="TrainingCollision" type="CollisionShape3D" parent="TrainingBlock"]
+shape = SubResource("BoxShape3D_training")
 
 [node name="Player" type="CharacterBody3D" parent="."]
 position = Vector3(0, 1.2, 0)
