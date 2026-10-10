@@ -74,3 +74,7 @@ func _attack_target() -> void:
 
     if target.has_method("take_damage"):
         target.take_damage(contact_damage)
+    else:
+        var health_node := target.get_node_or_null("Health")
+        if health_node != null and health_node.has_method("take_damage"):
+            health_node.take_damage(contact_damage)
