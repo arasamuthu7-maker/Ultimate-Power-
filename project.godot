@@ -9,6 +9,7 @@ run/main_scene="res://LoadingScreen.tscn"
 
 [autoload]
 GameProgress="*res://GameProgress.gd"
+MultiplayerManager="*res://MultiplayerManager.gd"
 
 [display]
 window/size/viewport_width=1280
