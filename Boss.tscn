@@ -8,3 +8,4 @@ contact_damage = 25.0
 move_speed = 2.2
 attack_range = 2.2
 attack_cooldown = 1.4
+is_boss = true
