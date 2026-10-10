@@ -12,6 +12,7 @@ func _ready() -> void:
     _make_button("BLAST", Vector2(-265, -115), Vector2(82, 62), _blast)
     _make_button("SMASH", Vector2(-170, -115), Vector2(82, 62), _smash)
     _make_button("DASH", Vector2(-75, -115), Vector2(68, 62), _dash)
+    _make_button("TALK", Vector2(-265, -190), Vector2(82, 58), _talk)
 
 func _make_button(label_text: String, bottom_right_offset: Vector2, button_size: Vector2, action: Callable) -> void:
     var button := Button.new()
@@ -57,3 +58,17 @@ func _smash() -> void:
 func _dash() -> void:
     if is_instance_valid(combat) and combat.has_method("use_power"):
         combat.use_power("Power Dash")
+
+func _talk() -> void:
+    var nearest: Node = null
+    var nearest_distance: float = INF
+    if not is_instance_valid(player):
+        return
+    for npc in get_tree().get_nodes_in_group("npcs"):
+        if npc.has_method("interact_from_mobile"):
+            var distance: float = player.global_position.distance_to(npc.global_position)
+            if distance <= 3.0 and distance < nearest_distance:
+                nearest = npc
+                nearest_distance = distance
+    if is_instance_valid(nearest):
+        nearest.interact_from_mobile()
