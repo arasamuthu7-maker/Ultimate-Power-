@@ -5,6 +5,7 @@ extends CharacterBody3D
 @export var contact_damage: float = 10.0
 @export var attack_range: float = 1.8
 @export var attack_cooldown: float = 1.0
+@export var is_boss: bool = false
 
 var health: float
 var attack_timer: float = 0.0
@@ -65,6 +66,9 @@ func take_damage(amount: float) -> void:
         health_bar.set_health(health, max_health)
 
     if health <= 0.0:
+        if is_instance_valid(Engine.get_main_loop()) and Engine.get_main_loop() is SceneTree:
+            if (Engine.get_main_loop() as SceneTree).root.has_node("GameProgress"):
+                (Engine.get_main_loop() as SceneTree).root.get_node("GameProgress").enemy_defeated(is_boss)
         defeated.emit()
         queue_free()
 
