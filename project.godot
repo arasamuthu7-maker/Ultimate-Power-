@@ -7,6 +7,9 @@ config_version=5
 config/name="Ultimate Power Simulator"
 run/main_scene="res://LoadingScreen.tscn"
 
+[autoload]
+GameProgress="*res://GameProgress.gd"
+
 [display]
 window/size/viewport_width=1280
 window/size/viewport_height=720
