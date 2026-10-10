@@ -91,6 +91,7 @@ func _on_peer_connected(id: int) -> void:
         return
     _ensure_avatar(id)
     rpc("announce_player", id)
+    rpc_id(id, "announce_player", multiplayer.get_unique_id())
     for existing_id in multiplayer.get_peers():
         if existing_id != id:
             rpc_id(id, "announce_player", existing_id)
