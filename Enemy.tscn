@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://Enemy.gd" id="1_enemy"]
+[ext_resource type="Script" path="res://CharacterVisual.gd" id="2_visual"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_enemy"]
 radius = 0.55
@@ -19,9 +20,14 @@ collision_layer = 2
 collision_mask = 1
 
 [node name="Mesh" type="MeshInstance3D" parent="."]
+visible = false
 position = Vector3(0, 0.9, 0)
 mesh = SubResource("CapsuleMesh_enemy")
 surface_material_override/0 = SubResource("StandardMaterial3D_enemy")
+
+[node name="OriginalVoidFighterVisual" type="Node3D" parent="."]
+script = ExtResource("2_visual")
+character_style = "enemy"
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 position = Vector3(0, 0.9, 0)
