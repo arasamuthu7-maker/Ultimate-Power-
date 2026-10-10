@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://EnemySpawner.gd" id="6_spawner"]
 [ext_resource type="PackedScene" path="res://NPC.tscn" id="7_npc"]
 [ext_resource type="PackedScene" path="res://MobileControls.tscn" id="8_mobile"]
+[ext_resource type="Script" path="res://CharacterVisual.gd" id="9_visual"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
 size = Vector2(80, 80)
@@ -85,7 +86,12 @@ script = ExtResource("1_player")
 script = ExtResource("4_health")
 
 [node name="PlayerMesh" type="MeshInstance3D" parent="Player"]
+visible = false
 mesh = SubResource("CapsuleMesh_player")
+
+[node name="OriginalHeroVisual" type="Node3D" parent="Player"]
+script = ExtResource("9_visual")
+character_style = "hero"
 
 [node name="PlayerCollision" type="CollisionShape3D" parent="Player"]
 shape = SubResource("CapsuleShape3D_player")
