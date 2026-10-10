@@ -1,6 +1,6 @@
 extends Node
-## First multiplayer milestone: direct ENet sessions and remote-player visual sync.
-## Internet hosting needs a reachable server address and UDP port forwarding or a hosted VPS.
+## First milestone: direct ENet sessions and remote hero visual/position sync.
+## Public internet hosting requires a reachable host and UDP port forwarding or a hosted relay/VPS.
 const PORT: int = 24560
 const MAX_CLIENTS: int = 8
 const AVATAR_SCRIPT = preload("res://CharacterVisual.gd")
@@ -82,7 +82,6 @@ func _process(delta: float) -> void:
     _last_sent_position = pos
     var local_id := multiplayer.get_unique_id()
     if multiplayer.is_server():
-        _apply_remote_position(local_id, pos)
         rpc("relay_position", local_id, pos)
     else:
         rpc_id(1, "submit_position", local_id, pos)
@@ -90,20 +89,23 @@ func _process(delta: float) -> void:
 func _on_peer_connected(id: int) -> void:
     if not multiplayer.is_server():
         return
+    _ensure_avatar(id)
     rpc("announce_player", id)
     for existing_id in multiplayer.get_peers():
         if existing_id != id:
             rpc_id(id, "announce_player", existing_id)
 
 func _on_peer_disconnected(id: int) -> void:
-    rpc("remove_player", id)
+    _remove_avatar(id)
+    if multiplayer.is_server():
+        rpc("remove_player", id)
 
 func _on_connected_to_server() -> void:
-    _set_status("Connected! Friends can explore together. Boss raid sync is a later milestone.")
+    _set_status("Connected! Friends can explore together. Boss raid synchronization is a later milestone.")
     rpc_id(1, "announce_player", multiplayer.get_unique_id())
 
 func _on_connection_failed() -> void:
-    last_error = "Connection failed. Check the address, UDP port forwarding, and firewall."
+    last_error = "Connection failed. Check address, UDP port forwarding, and firewall."
     _set_status(last_error)
     disconnect_session()
 
@@ -115,12 +117,7 @@ func _set_status(message: String) -> void:
     status_text = message
     connection_status_changed.emit(message)
 
-@rpc("any_peer", "call_remote", "reliable")
-func announce_player(id: int) -> void:
-    if not multiplayer.is_server() and multiplayer.get_remote_sender_id() != 1:
-        return
-    if multiplayer.is_server() and multiplayer.get_remote_sender_id() != 0 and multiplayer.get_remote_sender_id() != id:
-        return
+func _ensure_avatar(id: int) -> void:
     if id == multiplayer.get_unique_id() or _remote_avatars.has(id):
         return
     var avatar := Node3D.new()
@@ -128,26 +125,42 @@ func announce_player(id: int) -> void:
     avatar.set_script(AVATAR_SCRIPT)
     avatar.set("character_style", "hero")
     avatar.set_meta("network_peer_id", id)
-    avatar.position = Vector3.ZERO
     var scene := get_tree().current_scene
     if scene != null:
         scene.add_child(avatar)
         _remote_avatars[id] = avatar
 
+func _remove_avatar(id: int) -> void:
+    if not _remote_avatars.has(id):
+        return
+    var avatar: Node = _remote_avatars[id]
+    if is_instance_valid(avatar):
+        avatar.queue_free()
+    _remote_avatars.erase(id)
+
+@rpc("any_peer", "call_remote", "reliable")
+func announce_player(id: int) -> void:
+    var sender := multiplayer.get_remote_sender_id()
+    if multiplayer.is_server():
+        if sender != 0 and sender != id:
+            return
+        _ensure_avatar(id)
+        if sender == id:
+            rpc("announce_player", id)
+    elif sender == 1:
+        _ensure_avatar(id)
+
 @rpc("any_peer", "call_remote", "reliable")
 func remove_player(id: int) -> void:
-    if not multiplayer.is_server() and multiplayer.get_remote_sender_id() != 1:
+    if multiplayer.get_remote_sender_id() != 1 and not multiplayer.is_server():
         return
-    if _remote_avatars.has(id):
-        var avatar: Node = _remote_avatars[id]
-        if is_instance_valid(avatar):
-            avatar.queue_free()
-        _remote_avatars.erase(id)
+    _remove_avatar(id)
 
 @rpc("any_peer", "call_remote", "unreliable")
 func submit_position(id: int, pos: Vector3) -> void:
     if not multiplayer.is_server() or multiplayer.get_remote_sender_id() != id:
         return
+    _ensure_avatar(id)
     _apply_remote_position(id, pos)
     rpc("relay_position", id, pos)
 
@@ -160,8 +173,7 @@ func relay_position(id: int, pos: Vector3) -> void:
 func _apply_remote_position(id: int, pos: Vector3) -> void:
     if id == multiplayer.get_unique_id():
         return
-    if not _remote_avatars.has(id):
-        announce_player(id)
+    _ensure_avatar(id)
     if _remote_avatars.has(id):
         var avatar: Node3D = _remote_avatars[id]
         if is_instance_valid(avatar):
