@@ -1,0 +1,7 @@
+
+[gd_scene format=3]
+
+[node name="Main" type="Node3D"]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+rotation = Vector3(-0.8, -0.5, 0.0)
