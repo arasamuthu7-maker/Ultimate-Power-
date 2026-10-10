@@ -6,6 +6,7 @@ var health_component: Node
 var health_label: Label
 var health_bar: ProgressBar
 var status_label: Label
+var progress_label: Label
 
 func _ready() -> void:
     health_component = get_node_or_null(player_health_path)
@@ -30,9 +31,16 @@ func _ready() -> void:
     layout.add_child(health_bar)
 
     status_label = Label.new()
-    status_label.text = "1 Energy Blast  |  2 Ground Smash  |  3 Power Dash"
+    status_label.text = "BLAST  |  SMASH  |  DASH"
     status_label.position = Vector2(18, 112)
     add_child(status_label)
+
+    progress_label = Label.new()
+    progress_label.position = Vector2(18, 142)
+    add_child(progress_label)
+    if has_node("/root/GameProgress"):
+        get_node("/root/GameProgress").progress_changed.connect(_on_progress_changed)
+        _on_progress_changed(get_node("/root/GameProgress").level, get_node("/root/GameProgress").xp, get_node("/root/GameProgress").coins)
 
     if is_instance_valid(health_component):
         health_component.health_changed.connect(_on_health_changed)
@@ -49,3 +57,8 @@ func _on_health_changed(current: float, maximum: float) -> void:
 func _on_player_defeated() -> void:
     if is_instance_valid(status_label):
         status_label.text = "KNOCKED OUT — restart the scene to try again"
+
+
+func _on_progress_changed(level: int, xp: int, coins: int) -> void:
+    if is_instance_valid(progress_label):
+        progress_label.text = "LEVEL %d  |  XP %d/%d  |  COINS %d" % [level, xp, level * 100, coins]
