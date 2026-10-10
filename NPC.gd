@@ -57,13 +57,19 @@ func _refresh_prompt() -> void:
         dialogue_label.visible = false
 
 func _interact() -> void:
-    dialogue_label.text = npc_name + ": " + dialogue
+    var message := dialogue
+    if has_node("/root/GameProgress"):
+        var progress := get_node("/root/GameProgress")
+        match npc_role:
+            "Quest":
+                message = progress.quest_status() + " — defeat enemies to earn XP and coins."
+            "Shop":
+                if progress.buy_attack_upgrade():
+                    message = "Upgrade purchased! Your powers deal +5 damage. Coins left: %d" % progress.coins
+                else:
+                    message = "Attack upgrade costs 50 coins. You have %d." % progress.coins
+            "Trainer":
+                message = "Training: use BLAST, SMASH and DASH. Current Level: %d" % progress.level
+    dialogue_label.text = npc_name + ": " + message
     dialogue_label.visible = true
     prompt_label.text = "Press E to talk again"
-    match npc_role:
-        "Quest":
-            print("Quest NPC: ", npc_name, " interacted with.")
-        "Shop":
-            print("Shop NPC: ", npc_name, " interacted with.")
-        "Trainer":
-            print("Trainer NPC: ", npc_name, " interacted with.")
