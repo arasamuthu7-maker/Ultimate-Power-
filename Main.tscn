@@ -1,8 +1,9 @@
-[gd_scene load_steps=13 format=3]
+[gd_scene load_steps=14 format=3]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_player"]
 [ext_resource type="PackedScene" path="res://Enemy.tscn" id="2_enemy"]
 [ext_resource type="Script" path="res://CombatController.gd" id="3_combat"]
+[ext_resource type="Script" path="res://PlayerHealth.gd" id="4_health"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
 size = Vector2(80, 80)
@@ -75,6 +76,9 @@ shape = SubResource("BoxShape3D_training")
 [node name="Player" type="CharacterBody3D" parent="."]
 position = Vector3(0, 1.2, 0)
 script = ExtResource("1_player")
+
+[node name="Health" type="Node" parent="Player"]
+script = ExtResource("4_health")
 
 [node name="PlayerMesh" type="MeshInstance3D" parent="Player"]
 mesh = SubResource("CapsuleMesh_player")
