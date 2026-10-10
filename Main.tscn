@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_player"]
 [ext_resource type="PackedScene" path="res://Enemy.tscn" id="2_enemy"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://PlayerHealth.gd" id="4_health"]
 [ext_resource type="Script" path="res://GameHUD.gd" id="5_hud"]
 [ext_resource type="Script" path="res://EnemySpawner.gd" id="6_spawner"]
+[ext_resource type="PackedScene" path="res://NPC.tscn" id="7_npc"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
 size = Vector2(80, 80)
@@ -93,6 +94,24 @@ script = ExtResource("3_combat")
 
 [node name="EnemySpawner" type="Node3D" parent="."]
 script = ExtResource("6_spawner")
+
+[node name="QuestNPC" parent="." instance=ExtResource("7_npc")]
+position = Vector3(-6, 0, -4)
+npc_name = "Quest Giver"
+npc_role = "Quest"
+dialogue = "Complete your first training challenge to become stronger!"
+
+[node name="ShopNPC" parent="." instance=ExtResource("7_npc")]
+position = Vector3(6, 0, 0)
+npc_name = "Power Merchant"
+npc_role = "Shop"
+dialogue = "Welcome! Shops will sell upgrades when the coin system is ready."
+
+[node name="TrainerNPC" parent="." instance=ExtResource("7_npc")]
+position = Vector3(-6, 0, 4)
+npc_name = "Combat Trainer"
+npc_role = "Trainer"
+dialogue = "Use 1 for Energy Blast, 2 for Ground Smash, and 3 for Power Dash."
 
 [node name="GameHUD" type="CanvasLayer" parent="."]
 script = ExtResource("5_hud")
