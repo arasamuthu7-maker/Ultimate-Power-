@@ -10,12 +10,18 @@ var health: float
 var attack_timer: float = 0.0
 var target: Node3D
 var gravity: float = 9.8
+var health_bar: Node3D
 
 signal health_changed(current_health: float, maximum_health: float)
 signal defeated
 
 func _ready() -> void:
     health = max_health
+    var bar_script = load("res://HealthBar.gd")
+    health_bar = Node3D.new()
+    health_bar.set_script(bar_script)
+    health_bar.position = Vector3(0, 2.15, 0)
+    add_child(health_bar)
     var player := get_tree().current_scene.get_node_or_null("Player")
     if player is Node3D:
         target = player
@@ -55,6 +61,8 @@ func take_damage(amount: float) -> void:
 
     health = maxf(health - amount, 0.0)
     health_changed.emit(health, max_health)
+    if is_instance_valid(health_bar):
+        health_bar.set_health(health, max_health)
 
     if health <= 0.0:
         defeated.emit()
