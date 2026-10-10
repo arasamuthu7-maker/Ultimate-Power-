@@ -103,3 +103,4 @@ func _finish_loading() -> void:
 func _on_start_pressed() -> void:
     if loading_done:
         loading_finished.emit()
+        get_tree().change_scene_to_file("res://Main.tscn")
