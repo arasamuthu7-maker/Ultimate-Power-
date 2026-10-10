@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3]
+[gd_scene load_steps=22 format=3]
 
 [ext_resource type="Script" path="res://Player.gd" id="1_player"]
 [ext_resource type="PackedScene" path="res://Enemy.tscn" id="2_enemy"]
@@ -9,6 +9,8 @@
 [ext_resource type="PackedScene" path="res://NPC.tscn" id="7_npc"]
 [ext_resource type="PackedScene" path="res://MobileControls.tscn" id="8_mobile"]
 [ext_resource type="Script" path="res://CharacterVisual.gd" id="9_visual"]
+[ext_resource type="Script" path="res://IslandMap.gd" id="10_island"]
+[ext_resource type="Script" path="res://BossSpawner.gd" id="11_boss"]
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_ground"]
 size = Vector2(80, 80)
@@ -101,6 +103,13 @@ script = ExtResource("3_combat")
 
 [node name="EnemySpawner" type="Node3D" parent="."]
 script = ExtResource("6_spawner")
+
+[node name="FloatingIslandMap" type="Node3D" parent="."]
+script = ExtResource("10_island")
+
+[node name="VoidBossSpawner" type="Node3D" parent="."]
+position = Vector3(0, 0, -24)
+script = ExtResource("11_boss")
 
 [node name="QuestNPC" parent="." instance=ExtResource("7_npc")]
 position = Vector3(-6, 0, -4)
